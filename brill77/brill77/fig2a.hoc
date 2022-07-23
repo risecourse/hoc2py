@@ -1,0 +1,34 @@
+load_file("nrngui.hoc")
+load_file("cable.hoc")
+geom(1000) // avoid error prior to version 5.3 for too long cells
+load_file(1, "fig2a.ses")
+
+secondorder = 2
+
+len = 0
+
+objref vvec, tvec
+
+vvec = new Vector()
+tvec = new Vector()
+vvec.record(&node[4].v(.5))
+tvec.record(&t)
+
+strdef tstr
+proc prun() {local i
+	geom($1)
+	sprint(tstr, "%g", $1)
+	vvec.label(tstr)
+	run()
+	i = vvec.max_ind
+	tvec.sub(tvec.x[i] - 2)
+	vvec.line(Graph[0], tvec)
+}
+
+for case (&len, 2000, 8000, 9500) {
+	prun(len)
+}
+
+vvec.record(&node[30].v(.5))
+prun(50)
+stdinit() // get rid of last time plot on graph

@@ -1,0 +1,35 @@
+load_file("nrngui.hoc")
+
+strdef tstr
+
+xpanel("Figures for Brill et. al, 1977")
+xlabel("Figures for Brill et. al, 1977")
+xradiobutton("Figure 1", "restart(\"fig1\")")
+xradiobutton("Figure 2a", "restart(\"fig2a\")")
+xradiobutton("Figure 2b", "restart(\"fig2b\")", 1)
+xpanel(370,1)
+
+pwmcnt = PWManager[0].count // the initial gui should not be dismissed
+objref g[1], v1, v2, tvec, vvec
+
+load_file(1, "fig2b.hoc")
+
+proc restart() {local i
+	objref graphItem, save_window_
+	objref g[1], v1, v2, tvec, vvec
+	for i=0, n_graph_lists-1 {
+		graphList[i].remove_all()
+	}
+	flush_list.remove_all()
+	fast_flush_list.remove_all()
+	doNotify()
+	for (i= PWManager[0].count-1; i >= pwmcnt; i -= 1) {
+		PWManager[0].close(i)
+		doNotify()
+	}
+	dt = .025
+	steps_per_ms = 40
+	tstop = 10
+	sprint(tstr, "%s.hoc", $s1)
+	load_file(1, tstr)
+}

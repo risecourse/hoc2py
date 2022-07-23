@@ -1,0 +1,9 @@
+load_file("nrngui.hoc")
+load_file("cable.hoc")
+
+geom(1000) // avoid error prior to version 5.3 for too long cells
+load_file(1, "fig2b.ses")
+geom(9500)
+secondorder = 2
+run()
+

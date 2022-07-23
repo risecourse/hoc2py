@@ -1,0 +1,64 @@
+load_file("nrngui.hoc")
+load_file("cable.hoc")
+
+secondorder = 2
+
+len = 0
+
+objref v1, v2, tvec
+
+v1 = new Vector()
+v2 = new Vector()
+tvec = new Vector()
+tvec.record(&t)
+
+// iterpolated time at which voltage = threshold
+func where() {local i, v1, v2, t1, t2, x
+	i = $o1.indwhere(">=", $2)
+	v1 = $o1.x[i-1]
+	v2 = $o1.x[i]
+	t1 = tvec.x[i-1]
+	t2 = tvec.x[i]
+	x = ($2 - v1)/(v2 - v1)
+	return t1 + x*(t2 - t1)
+}
+
+func ict() {local i, thresh
+	if ($1 > 1000) {
+		v1.record(&node[4].v(1))
+		v2.record(&node[5].v(0))
+		dt = .01
+		tstop = 6
+	}else{
+		v1.record(&node[30].v(1))
+		v2.record(&node[31].v(0))
+		dt = .005
+		tstop = 3
+	}
+	thresh = 50 - 65
+	geom($1)
+	run()
+	t1 = where(v1, thresh)
+	t2 = where(v2, thresh)
+	return t2 - t1
+}
+
+objref g[3]
+geom(1000) // avoid error prior to version 5.3 for too long cells
+load_file(1, "fig1.ses")
+
+len = 25
+
+g[0].begin
+for case(&len, 25, 50, 100, 200, 1000, 2000, 4000, 6000, 8000, 9000, 9500) {
+	g[0].plot(len)
+	g[0].flush
+}
+g[0].flush
+
+
+g[0].getline(-1, v1, v2)
+v2 = v1.c.div(v2).mul(1e-3) // factor converts micron/ms to m/s  v2 is velocity
+v2.line(g[1], v1)
+v2.c.pow(-1).line(g[2], v1.log10)
+
