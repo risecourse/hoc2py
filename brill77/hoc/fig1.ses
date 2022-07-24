@@ -48,7 +48,7 @@ scene_vector_[5] = save_window_
 g[1] = save_window_
 save_window_.save_name("g[1]")
 save_window_.label(0.434505, 0.124601, "L (um)", 2, 1, 0, 0, 1)
-save_window_.label(0.389776, 0.896166, "theta (m/s)", 2, 1, 0, 0, 1)
+save_window_.label(0.389776, 0.896166, "-a (m/s)", 2, 1, 0, 0, 1)
 }
 {
 save_window_ = new Graph(0)
